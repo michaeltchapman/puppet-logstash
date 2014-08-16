@@ -1,0 +1,11 @@
+name          'michaeltchapman-logstash'
+version       '0.1.0'
+source        'https://github.com/michaeltchapman/puppet-logstash'
+author        'michaeltchapman'
+license       'Apache 2.0'
+summary       'Manage logstash servers and agents'
+description   'Manage logstash servers and agents'
+project_page  'https://github.com/michaeltchapman/puppet-logstash'
+
+dependency 'puppetlabs/stdlib'
+dependency 'puppetlabs/apt'
