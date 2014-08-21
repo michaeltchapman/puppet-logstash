@@ -36,7 +36,7 @@ class logstash::params {
                         }
     }
     default: {
-      fail("${::operatingsystem} not supported")
+      fail("${::osfamily} not supported")
     }
   }
 }

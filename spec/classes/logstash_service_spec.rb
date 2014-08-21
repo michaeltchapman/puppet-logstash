@@ -8,14 +8,14 @@ describe 'logstash::service' do
     }
   end
 
-  shared_examples for 'logstash::service' do
+  shared_examples_for 'logstash::service' do
     describe 'with default params' do
       it { should contain_service('logstash').with(
         :name        => platform_params['service_name'],
         :ensure      => 'running',
         :enable      => true,
         :hasstatus   => true,
-        :hashrestart => true
+        :hasrestart => true
       )}
     end
 
@@ -45,7 +45,7 @@ describe 'logstash::service' do
 
     let :platform_params do
       {
-        :service_name      => 'logstash',
+        'service_name'      => 'logstash',
       }
     end
     it_configures 'logstash::service'
@@ -62,7 +62,7 @@ describe 'logstash::service' do
 
     let :platform_params do
       {
-        :service_name      => 'logstash',
+        'service_name'      => 'logstash',
       }
     end
 

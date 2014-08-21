@@ -18,14 +18,16 @@ describe 'logstash::repo' do
 
     let :platform_params do
       {
-        :default_repo      => {
+        'default_repo' => {
           'logstash' => {
-             'name'     => 'logstash repository for 1.4.x packages',
+             'descr'     => 'logstash repository for 1.4.x packages',
              'baseurl'  => 'http://packages.elasticsearch.org/logstash/1.4/centos',
-             'gpgcheck' => '1',
-             'enabled'  => '1',
              'gpgkey'   => 'http://packages.elasticsearch.org/GPG-KEY-elasticsearch'
           }
+        },
+        'repo_defaults' => {
+          'enabled'  => '1',
+          'gpgcheck' => '1'
         }
       }
     end
@@ -34,41 +36,41 @@ describe 'logstash::repo' do
       it { should contain_yumrepo('logstash').with(
         :baseurl    => platform_params['default_repo']['logstash']['baseurl'],
         :descr      => platform_params['default_repo']['logstash']['descr'],
-        :gpgcheck   => platform_params['default_repo']['logstash']['gpgcheck'],
-        :enabled    => platform_params['default_repo']['logstash']['enabled'],
+        :gpgcheck   => platform_params['repo_defaults']['gpgcheck'],
+        :enabled    => platform_params['repo_defaults']['enabled'],
         :gpgkey     => platform_params['default_repo']['logstash']['gpgkey']
       )}
     end
 
     describe 'with repo defaults overridden' do
       let :params do
-        default_params.merge!({
-                                :repo_defaults => {
-                                  :proxy    => 'http://example.com:8000',
-                                  :gpgcheck => '0'
-                                }
-                              })
+      {
+        'repo_defaults' => {
+          'proxy'    => 'http://example.com:8000',
+          'descr'    => 'great mirror'
+        }
+      }
       end
       it { should contain_yumrepo('logstash').with(
         :baseurl    => platform_params['default_repo']['logstash']['baseurl'],
         :descr      => platform_params['default_repo']['logstash']['descr'],
-        :enabled    => platform_params['default_repo']['logstash']['enabled'],
+        :enabled    => platform_params['repo_defaults']['enabled'],
         :gpgkey     => platform_params['default_repo']['logstash']['gpgkey'],
-        :gpgcheck   => '0',
+        :gpgcheck   => platform_params['repo_defaults']['gpgcheck'],
         :proxy      => 'http://example.com:8000'
       )}
     end
 
     describe 'with repo overridden' do
       let :params do
-        default_params.merge!({
-                                :repo_hash => {
-                                  'test' => {
-                                    :baseurl => 'http://example.com/centos',
-                                    :descr   => 'test repo'
-                                  }
-                                }
-                              })
+      {
+        'repo_hash' => {
+          'test' => {
+            'baseurl' => 'http://example.com/centos',
+            'descr'   => 'test repo'
+          }
+        }
+      }
       end
 
       it { should contain_yumrepo('test').with(
@@ -84,13 +86,13 @@ describe 'logstash::repo' do
       {
         :osfamily               => 'Debian',
         :operatingsystem        => 'Debian',
-        :lsbdistid              => 'wheezy'
+        :lsbdistid              => 'debian'
       }
     end
 
     let :platform_params do
       {
-        :default_repo => {
+        'default_repo' => {
           'logstash' => {
              'location'   => 'http://packages.elasticsearch.org/logstash/1.4/debian',
              'key_source' => 'http://packages.elasticsearch.org/GPG-KEY-elasticsearch',
@@ -106,26 +108,26 @@ describe 'logstash::repo' do
         :location       => platform_params['default_repo']['logstash']['location'],
         :key_source     => platform_params['default_repo']['logstash']['key_source'],
         :release        => platform_params['default_repo']['logstash']['release'],
-        :repos          => platform_params['default_repo']['logstash']['repos'],
+        :repos          => platform_params['default_repo']['logstash']['repos']
       )}
     end
 
     describe 'with overridden repo' do
       let :params do
-        default_params.merge!({
-                                :repo_hash => {
-                                  'test' => {
-                                    :location   => 'http://example.com/debian',
-                                    :release    => 'unstable'
-                                    :repos      => 'updates'
-                                  }
-                                }
-                              })
+      {
+        'repo_hash' => {
+          'test' => {
+            'location'   => 'http://example.com/debian',
+            'release'    => 'unstable',
+            'repos'      => 'updates'
+          }
+        }
+      }
       end
       it { should contain_apt__source('test').with(
-        :location       => platform_params['default_repo']['logstash']['location'],
-        :release        => platform_params['default_repo']['logstash']['release'],
-        :repos          => platform_params['default_repo']['logstash']['repos'],
+        :location       => 'http://example.com/debian',
+        :release        => 'unstable',
+        :repos          => 'updates'
       )}
       it { should_not contain_apt__source('logstash')}
     end

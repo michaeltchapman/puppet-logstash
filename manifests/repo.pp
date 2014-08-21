@@ -6,6 +6,7 @@ class logstash::repo(
   $repo_hash     = undef,
   $repo_defaults = {}
 ) {
+    include logstash::params
 
     if $repo_hash {
       $_repo_hash = $repo_hash
@@ -17,10 +18,10 @@ class logstash::repo(
 
     case $::osfamily {
       'RedHat', 'Amazon': {
-        create_resources('yumrepo', $_repo_hash, $repo_defaults)
+        create_resources('yumrepo', $_repo_hash, $_repo_defaults)
       }
       'Debian': {
-        create_resources('apt::source', $_repo_hash, $repo_defaults)
+        create_resources('apt::source', $_repo_hash, $_repo_defaults)
       }
       default: {
         warning("Repository has not been set as ${::osfamily} is not supported.")

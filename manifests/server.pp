@@ -4,11 +4,18 @@
 #
 # === Parameters
 #
-# [*package_name*]
-#   Name of the logstash package to use
+# [*manage_package*]
+#   Whether to manage the logstash package
 #
-# [*service_name*]
-#   Name of the logstash service to manage
+# [*manage_service*]
+#   Whether to manage the logstash service
+#
+# [*manage_repo*]
+#   Whether to manage the logstash repo
+#
+# [*config_hash*]
+#   A hash of config files and their contents. See examples folder
+#   for the format.
 #
 class logstash::server (
   $manage_package       = true,
@@ -21,15 +28,7 @@ class logstash::server (
   validate_bool($manage_package)
   validate_bool($manage_service)
 
-  validate_string($service_ensure)
-  validate_string($service_name)
-  validate_string($package_name)
-
   if $manage_repo {
-    if ! $manage_package {
-      fail('$manage_package should be true if $manage_repo is true')
-    }
-
     include logstash::repo
     if $manage_package {
       Class['logstash::repo'] -> Class['logstash::package']

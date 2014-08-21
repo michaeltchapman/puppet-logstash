@@ -1,20 +1,42 @@
 require 'spec_helper'
 
-describe 'logstash' do
+describe 'logstash::package' do
   let :default_params do
     {
+      :package_ensure      => 'installed',
+      :java_package_ensure => 'installed'
     }
   end
 
-  shared_examples for 'logstash' do
+  shared_examples_for 'logstash::package' do
     describe 'with default params' do
+      it { should contain_package('logstash').with(
+        :ensure => 'installed',
+        :name   => platform_params[:package_name]
+      )}
+      it { should contain_package('java-1.7').with(
+        :ensure => 'installed',
+        :name   => platform_params[:java_package_name]
+      )}
     end
 
-    describe 'with service disabled' do
+    describe 'with parameters overridden' do
       let :params do
         default_params.merge!({
+                                :package_name   => 'logstash-fork',
+                                :package_ensure => 'latest',
+                                :java_package_name => 'sun-java-thing',
+                                :java_package_ensure => 'latest'
                               })
       end
+      it { should contain_package('logstash').with(
+        :ensure => 'latest',
+        :name   => 'logstash-fork'
+      )}
+      it { should contain_package('java-1.7').with(
+        :ensure => 'latest',
+        :name   => 'sun-java-thing'
+      )}
     end
   end
 
@@ -31,18 +53,9 @@ describe 'logstash' do
       {
         :package_name      => 'logstash',
         :java_package_name => 'java-1.7.0-openjdk',
-        :service_name      => 'logstash',
-        :default_repo => {
-          'logstash' => {
-             'location'   => 'http://packages.elasticsearch.org/logstash/1.4/debian',
-             'key_source' => 'http://packages.elasticsearch.org/GPG-KEY-elasticsearch',
-             'release'    => 'stable',
-             'repos'      => 'main' 
-          }
-        }
       }
     end
-    it_configures 'logstash'
+    it_configures 'logstash::package'
   end
 
   context 'on RedHat platforms' do
@@ -58,19 +71,9 @@ describe 'logstash' do
       {
         :package_name      => 'logstash',
         :java_package_name => 'java-1.7.0-openjdk',
-        :service_name      => 'logstash',
-        :default_repo      => {
-          'logstash' => {
-             'name'     => 'logstash repository for 1.4.x packages',
-             'baseurl'  => 'http://packages.elasticsearch.org/logstash/1.4/centos',
-             'gpgcheck' => '1',
-             'enabled'  => '1',
-             'gpgkey'   => 'http://packages.elasticsearch.org/GPG-KEY-elasticsearch'
-          }
-        }
       }
     end
 
-    it_configures 'logstash'
+    it_configures 'logstash::package'
   end
 end
