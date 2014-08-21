@@ -1,30 +1,30 @@
 require 'spec_helper'
 
-describe 'logstash::package' do
+describe 'logstash::java_package' do
   let :default_params do
     {
-      :package_ensure      => 'installed',
+      :java_package_ensure => 'installed'
     }
   end
 
-  shared_examples_for 'logstash::package' do
+  shared_examples_for 'logstash::java_package' do
     describe 'with default params' do
-      it { should contain_package('logstash').with(
+      it { should contain_package('java-1.7').with(
         :ensure => 'installed',
-        :name   => platform_params[:package_name]
+        :name   => platform_params[:java_package_name]
       )}
     end
 
     describe 'with parameters overridden' do
       let :params do
         default_params.merge!({
-                                :package_name   => 'logstash-fork',
-                                :package_ensure => 'latest',
+                                :java_package_name => 'sun-java-thing',
+                                :java_package_ensure => 'latest'
                               })
       end
-      it { should contain_package('logstash').with(
+      it { should contain_package('java-1.7').with(
         :ensure => 'latest',
-        :name   => 'logstash-fork'
+        :name   => 'sun-java-thing'
       )}
     end
   end
@@ -40,10 +40,10 @@ describe 'logstash::package' do
 
     let :platform_params do
       {
-        :package_name      => 'logstash',
+        :java_package_name => 'java-1.7.0-openjdk',
       }
     end
-    it_configures 'logstash::package'
+    it_configures 'logstash::java_package'
   end
 
   context 'on RedHat platforms' do
@@ -57,10 +57,10 @@ describe 'logstash::package' do
 
     let :platform_params do
       {
-        :package_name      => 'logstash',
+        :java_package_name => 'java-1.7.0-openjdk',
       }
     end
 
-    it_configures 'logstash::package'
+    it_configures 'logstash::java_package'
   end
 end

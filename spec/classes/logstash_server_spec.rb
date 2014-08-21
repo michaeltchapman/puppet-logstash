@@ -4,6 +4,7 @@ describe 'logstash::server' do
   let :default_params do
     {
       :manage_package         => true,
+      :manage_java_package    => true,
       :manage_service         => true,
       :manage_repo            => true,
     }
@@ -19,6 +20,7 @@ describe 'logstash::server' do
     describe 'with default params' do
       it { should contain_class('logstash::repo')}
       it { should contain_class('logstash::package')}
+      it { should contain_class('logstash::java_package')}
       it { should contain_class('logstash::service')}
     end
 
@@ -47,6 +49,15 @@ describe 'logstash::server' do
                             })
     end
       it { should_not contain_class('logstash::package') }
+    end
+
+    describe 'with java package disabled' do
+    let :params do
+      default_params.merge!({
+                              :manage_java_package => false
+                            })
+    end
+      it { should_not contain_class('logstash::java_package') }
     end
 
     describe 'with config provided' do

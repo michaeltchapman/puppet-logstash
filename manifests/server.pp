@@ -19,6 +19,7 @@
 #
 class logstash::server (
   $manage_package       = true,
+  $manage_java_package  = true,
   $manage_service       = true,
   $manage_repo          = true,
   $config_hash          = undef,
@@ -26,6 +27,7 @@ class logstash::server (
 
   validate_bool($manage_repo)
   validate_bool($manage_package)
+  validate_bool($manage_java_package)
   validate_bool($manage_service)
 
   if $manage_repo {
@@ -39,6 +41,16 @@ class logstash::server (
     include logstash::package
     if $manage_service {
       Class['logstash::package'] ~> Class['logstash::service']
+    }
+  }
+
+  if $manage_java_package {
+    include logstash::java_package
+    if $manage_service {
+      Class['logstash::java_package'] ~> Class['logstash::service']
+    }
+    if $manage_package {
+      Class['logstash::java_package'] -> Class['logstash::package']
     }
   }
 
