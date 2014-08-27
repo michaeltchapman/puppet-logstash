@@ -57,7 +57,7 @@ class logstash::server (
   if $config_hash {
     class { 'logstash::config':
       config_hash     => $config_hash,
-    }
+    } ~> Service<| title == 'logstash' |>
   } else {
     notice('Not setting logstash config: no hash provided')
   }

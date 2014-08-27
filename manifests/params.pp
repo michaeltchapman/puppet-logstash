@@ -7,8 +7,10 @@ class logstash::params {
   case $::osfamily {
     'Debian': {
       $package_name = 'logstash'
+      $forwarder_package_name = 'logstash-forwarder'
       $java_package_name = 'java-1.7.0-openjdk'
       $service_name = 'logstash'
+      $forwarder_service_name = 'logstash-forwarder'
       $default_repo = {
                         'logstash' => {
                           'location'  => 'http://packages.elasticsearch.org/logstash/1.4/debian',
@@ -21,8 +23,10 @@ class logstash::params {
     }
     'RedHat', 'Amazon': {
       $package_name = 'logstash'
+      $forwarder_package_name = 'logstash-forwarder'
       $java_package_name = 'java-1.7.0-openjdk'
       $service_name = 'logstash'
+      $forwarder_service_name = 'logstash-forwarder'
       $default_repo   = {
                           'logstash' => {
                             'descr'    => 'logstash repository for 1.4.x packages',
